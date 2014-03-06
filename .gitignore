@@ -1,0 +1,29 @@
+# generic
+*.py[co]
+*.sw*
+*.db
+*.egg*
+*.coverage*
+
+# config files
+/ops/config.yaml
+
+# coverage reports
+.coverage
+
+# virtualenv
+/.Python
+/bin
+/bootstrap.py
+/*.egg-info
+/*.egg
+/tornado*
+/include
+/lib
+/build
+/dist
+/local
+
+# testing environment
+proxy.py
+
