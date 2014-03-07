@@ -1,11 +1,18 @@
 #!/usr/bin/env python
-
-import sys
-from os.path import dirname, realpath
+"""
+Pavement file for setting up the project. This needs
+to be python2.7 compatible if python3.3 is not the
+default version of Python in use by your OS.
+"""
 
 import paver.doctools
-from paver.easy import options
-from paver.setuputils import setup, find_packages
+import sys
+
+from os.path import dirname
+from os.path import realpath
+
+from paver.setuputils import find_packages
+from paver.setuputils import setup
 
 # make sure the current directory is in the python import path
 sys.path.insert(0, dirname(realpath(__file__)))
@@ -22,7 +29,6 @@ from tasks.run_pep8 import *
 install_requires = [
     'setuptools',
     'cerberus',
-    'mock',
     'pep8',
     'python-dateutil',
     'pytz',
@@ -39,7 +45,7 @@ install_requires = [
 #
 
 setup(
-    name="vcenter_api",
+    name='rest_api',
     version="0.1",
 
     # packaging infos

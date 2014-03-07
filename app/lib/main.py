@@ -14,6 +14,7 @@ from app.lib.route import get_routes
 from app.config import config
 from optparse import OptionParser
 
+
 log = logging.getLogger(__name__)
 
 
@@ -68,7 +69,7 @@ def command_line_options():
 
 
 def main(handler_path="app"):
-    """ entry point for the application """
+    """ Entry point for the application. """
 
     root = os.path.dirname(__file__)
 

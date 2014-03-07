@@ -1,11 +1,4 @@
 #!/usr/bin/env python
-"""
-    This directory contains a bunch of yaml files. These yaml files define the
-    requirements for incoming data. For example, the login_schema will ensure
-    that the json body includes a username, and makes sure that username is a
-    string. It also ensures there is a password, and makes sure it is a string
-    as well. If the json payload contains any other field, it will not be valid
-"""
 
 import logging
 import os
