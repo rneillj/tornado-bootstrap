@@ -21,5 +21,5 @@ paver create_virtualenv
 
 
 #####Acknowledgements
-*I'd like to credit Anthony Tarola and Kaleb Pomeroy for*
+*I would like to credit Anthony Tarola and Kaleb Pomeroy for*
 *help with the initial code and design of this project.*
