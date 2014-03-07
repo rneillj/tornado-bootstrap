@@ -43,27 +43,8 @@ class BaseHandler(RequestHandler):
 
     @gen.coroutine
     def prepare(self):
-        """ Ensure the request is well formed json and that they are auth'd """
-        self.racker = yield gen.Task(self.ensure_login)
+        """ Ensure the request is well formed json. """
         self.params = self.parse_request()
-
-    @gen.engine
-    def ensure_login(self, callback):
-        """ Verify the racker is logged in """
-        if getattr(self, "no_auth", False):
-            callback()
-            return
-
-        # Get the token from the cookie, or failing that, the header
-        token = self.get_cookie('X-Auth-Token', None)
-        if(token is None):
-            token = self.request.headers.get('X-Auth-Token', None)
-            if(token is None):
-                raise HTTPError(401, "No X-Auth-Token provided")
-
-        # TODO: add token validation
-
-        callback(token)
 
     def parse_request(self):
         content_type = self.request.headers.get(
