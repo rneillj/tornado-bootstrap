@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" This is the base class from which all data access objects should extend """
+""" This is the base class from which all resources should extend """
 
 import logging
 
