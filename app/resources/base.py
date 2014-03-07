@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" This is the base class from which all data access objects should extend """
+""" This is the base class from which all resources should extend. """
 
 import logging
 
@@ -15,38 +15,17 @@ from app.config import config
 log = logging.getLogger(__name__)
 
 
-@gen.engine
-def repeat(func, url, body, limit=50, offset=0, callback=None):
-    data = []
-    base_url = url
-
-    count = 0
-    while(limit >= 50):
-        if func.func_name == 'post' and count != 0:
-            offset = offset + limit  # next page
-            url = base_url + '?offset={0}'.format(offset)
-
-        count = count + 1
-        result = yield gen.Task(func, url, body)  # always wrapped in a list
-        result = result.body
-        limit = len(result.get('results', []))  # results we got back
-
-        data.extend(result.get('results', []))
-        if not config['feature_toggle']['future_api']:
-            break
-
-    callback({"results": data})
-
-
 class BaseResource(object):
 
-    endpoint = config['device_service']['endpoint']
-    if config['feature_toggle']['future_api'] is True:
-        endpoint = config['device_service']['future_endpoint']
-    client_features = ['exception', 'json', 'auth']
-
     @staticmethod
-    def get_client(*args):
+    def init_client(*features):
+        """
+        This method initializes a client to make an outgoing call to
+        a resource. It takes a list of features as an argument, maps
+        each feature to its class, and instantiates a client with
+        those features.
+        """
+
         feature_mapping = {
             'exception': ExceptionFeature,
             'json': JsonFeature
@@ -58,63 +37,78 @@ class BaseResource(object):
         return ComposureClient(*features)
 
     @staticmethod
-    def get_body(account_number):
+    @gen.coroutine
+    def list(self):
         """
-        This abstract method needs to be implemented in every
-        inheriting DAO to pass a body to the list call in this
-        class.
+        This method makes a call to get a list of the specified resources.
+        It calls an abstract method of the same name.
         """
-        raise NotImplementedError("This is an abstract method. It must be "
-                                  "implemented as a concrete method in an "
-                                  "inheriting class.")
+        response = yield gen.Task(self._list)
+        return response
 
     @staticmethod
-    def get_parent_body(device_id, children_attribute):
-        """ General body for searching for a device's parent """
-        body = {
-            children_attribute: {"$in": [device_id]}
-        }
-
-        return body
-
-    @classmethod
-    @gen.engine
-    def list(cls, account_number, callback):
-        client = BaseResource.get_client(*BaseResource.client_features)
-        url = "%s/search" % (BaseResource.endpoint)
-        if account_number and isinstance(account_number, int):
-            account_number = str(account_number)
-        response = yield gen.Task(
-            repeat,
-            client.post,
-            url,
-            cls.get_body(account_number)
-        )
-        callback(response['results'])
+    @gen.coroutine
+    def get(self):
+        """
+        This method makes a call to get the details of a specified resource.
+        It calls an abstract method of the same name.
+        """
+        response = yield gen.Task(self._get)
+        return response
 
     @staticmethod
-    @gen.engine
-    def get(device_id, callback):
-        client = BaseResource.get_client(*BaseResource.client_features)
-        url = "%s/devices/%s" % (BaseResource.endpoint, device_id)
-        response = yield gen.Task(client.get, url)
-        callback(response.body['device'])
-
-    @classmethod
-    @gen.engine
-    def get_parents(cls, device_id, children_attribute, callback):
+    @gen.coroutine
+    def put(self, resource, data):
         """
-            children_attribute is the Parent's child attribute,
-            for example "vms" on hypervisors
+        This method makes a call to update the details of a specified resource.
+        It calls an abstract method of the same name.
         """
-        client = BaseResource.get_client(*BaseResource.client_features)
-        url = "%s/search" % (BaseResource.endpoint)
+        response = yield gen.Task(self._put, obj, data)
+        return response
 
-        response = yield gen.Task(
-            repeat,
-            client.post,
-            url,
-            cls.get_parent_body(device_id, children_attribute)
-        )
+    @staticmethod
+    @gen.coroutine
+    def post(self, resource, data):
+        """
+        This method makes a call to create or append to a specified resource.
+        It calls an abstract method of the same name.
+        """
+        response = yield gen.Task(self._post, obj, data)
+        return response
 
-        callback(response['results'])
+    @staticmethod
+    @gen.coroutine
+    def delete(self, resource):
+        """
+        This method makes a call to delete a specified resource.
+        It calls an abstract method of the same name.
+        """
+        response = yield gen.Task(self._delete, obj)
+        return response
+
+    @staticmethod
+    @gen.coroutine
+    def _list(self):
+        raise NotImplementedError("This method is an abstract method to be "
+                                  "implemented in an inheriting class.")
+
+    @staticmethod
+    @gen.coroutine
+    def _get(self):
+        raise NotImplementedError("This method is an abstract method to be "
+                                  "implemented in an inheriting class.")
+    @staticmethod
+    @gen.coroutine
+    def _put(self, resource, data):
+        raise NotImplementedError("This method is an abstract method to be "
+                                  "implemented in an inheriting class.")
+    @staticmethod
+    @gen.coroutine
+    def _post(self, resource, data):
+        raise NotImplementedError("This method is an abstract method to be "
+                                  "implemented in an inheriting class.")
+    @staticmethod
+    @gen.coroutine
+    def _delete(self, resource):
+        raise NotImplementedError("This method is an abstract method to be "
+                                  "implemented in an inheriting class.")
