@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import logging
-
 import time
+
 
 log = logging.getLogger(__name__)
 

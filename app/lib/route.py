@@ -4,7 +4,7 @@ import logging
 import os
 import re
 
-import tornado
+import tornado.web
 
 from app.lib.autoload import autoload
 from pkg_resources import resource_filename
