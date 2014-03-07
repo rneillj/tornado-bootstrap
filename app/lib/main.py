@@ -3,8 +3,8 @@
 import logging
 import os
 
-import tornado.httpserver
 import tornado.web
+
 from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
