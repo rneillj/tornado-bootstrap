@@ -22,7 +22,10 @@ Quick Start
 ```
 cd tornado-bootstrap
 paver create_virtualenv
+
+cp ops/config.yaml.default ops/config.yaml
 source bin/activate
+
 rest_api -d ops/config.yaml
 ```
 
