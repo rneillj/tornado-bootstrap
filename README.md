@@ -14,11 +14,19 @@ sudo apt-get install libyaml-dev
 
 sudo pip3 install virtualenv
 sudo pip3 install paver
-
-cd tornado-bootstrap
-paver create_virtualenv
 ```
 
+Quick Start
+-----------
+
+```
+cd tornado-bootstrap
+paver create_virtualenv
+source bin/activate
+rest_api -d ops/config.yaml
+```
+
+Finally, visit http://localhost:3000/v1/docs/index.html to see the current documentation for your project.
 
 #####Acknowledgements
 *I would like to credit Anthony Tarola and Kaleb Pomeroy for*
