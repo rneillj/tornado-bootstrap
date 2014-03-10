@@ -13,7 +13,6 @@ from app.config import config
 
 @task
 @cmdopts([
-    ('mock', 'm', 'Use mocked data'),
     ('verbose', 'v', 'Verbose output'),
     ('quiet', 'q', 'Minimal output'),
     ('failfast', 'f', 'Stop on first failure'),
@@ -44,9 +43,6 @@ def test(options):
 
     if test_options.pop('verbose', False):
         test_options['verbosity'] = 2
-
-    if test_options.pop('mock', False):
-        print("Using Mocked data")
 
     runner = unittest.TextTestRunner(**test_options)
 

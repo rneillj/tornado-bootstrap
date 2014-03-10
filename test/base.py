@@ -11,7 +11,6 @@ from tornado.ioloop import IOLoop
 from tornado.testing import AsyncHTTPTestCase
 from tornado.web import Application
 
-from app.lib.mock import set_mock_data
 from app.lib.route import get_routes
 from app.config import config
 
@@ -23,10 +22,7 @@ class BaseTest(AsyncHTTPTestCase):
     """ Base class for all functional tests """
 
     def wait_until_active(self, t=30):
-        if 'mock_data' in config:
-            return
-        else:
-            time.sleep(t)
+        time.sleep(t)
 
     def setUp(self):
         super(BaseTest, self).setUp()
@@ -62,8 +58,6 @@ class BaseTest(AsyncHTTPTestCase):
         # call the superclass version of this
         super(BaseTest, cls).setUpClass()
         config.load_file('ops/config.yaml')
-        if("-m" in sys.argv or "--mock" in sys.argv):
-            set_mock_data()
 
 
 class AsyncMagicMock(MagicMock):
