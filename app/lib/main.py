@@ -42,12 +42,6 @@ def command_line_options():
                       help="Set the address to listen to on startup. Can be a "
                       "hostname or an IPv4/v6 address.")
 
-    parser.add_option('-m', '--mock',
-                      action="store_true",
-                      dest="mock",
-                      default=False,
-                      help="Only use Mock (fake) data")
-
     parser.add_option('-l', '--level',
                       choices=['DEBUG',
                                'INFO',
@@ -84,9 +78,6 @@ def main(handler_path="app"):
         get_routes(root, handler_path),
         debug=options.debug
     )
-
-    if(options.mock):
-        set_mock_data()
 
     # start the ioloop
     log.info("Starting the application on port %d" % (options.port))
