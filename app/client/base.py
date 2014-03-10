@@ -33,7 +33,7 @@ class ComposureClient(object):
     def call(self, method, endpoint, body, callback):
         request = self.setup_request(method, endpoint, body)
 
-        onion = self.actual_do_call
+        onion = self.make_call
         for feature in self.features:
 
             if(isinstance(feature, tuple)):
@@ -51,18 +51,7 @@ class ComposureClient(object):
         callback(response)
 
     @gen.engine
-    def actual_do_call(self, request, callback):
-        if 'mock_data' in config:
-            response = config['mock_data'].get_response(request)
-            if(response):
-                callback(CustomResponse(response['code'], response['body']))
-                return
-            else:
-                print("\n\nYou are running in half mocked mode. "
-                      "Make a mock for the following route\n"
-                      "MOCK NOT FOUND:", request.method, request.url)
-                print("\n\n")
-
+    def make_call(self, request, callback):
         message = "{0} {1} ".format(request.method, request.url)
         with timer(message + "took {0:0.2f} ms"):
             response = yield gen.Task(AsyncHTTPClient(max_clients=1000).fetch,
