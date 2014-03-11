@@ -77,14 +77,6 @@ class ComposureClient(object):
         return request
 
 
-class BaseFeature(object):
-    def __init__(self, client, next_feature, *args, **kwargs):
-        self.client = client
-        self.next_feature = next_feature
-        self.args = args
-        self.kwargs = kwargs
-
-
 class CustomResponse(object):
     def __init__(self, code, body):
         self._code = code

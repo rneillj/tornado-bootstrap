@@ -3,7 +3,7 @@ import json
 from tornado import gen
 from tornado.web import HTTPError
 
-from app.client.base import BaseFeature
+from app.client.features.base import BaseFeature
 
 
 class JsonFeature(BaseFeature):
