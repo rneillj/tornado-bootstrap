@@ -78,6 +78,7 @@ class ComposureClient(object):
 
 
 class CustomResponse(object):
+
     def __init__(self, code, body):
         self._code = code
         self._body = body

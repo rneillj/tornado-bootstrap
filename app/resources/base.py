@@ -5,7 +5,7 @@ import logging
 
 from tornado import gen
 
-from app.client.base import ComposureClient
+from app.client.composure import ComposureClient
 from app.client.features.exception import ExceptionFeature
 from app.client.features.json import JsonFeature
 
