@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-import sys
 import logging
 import time
 import os
 
 from mock import MagicMock
+from mock import patch
 
 from tornado.ioloop import IOLoop
 from tornado.testing import AsyncHTTPTestCase
@@ -58,6 +58,55 @@ class BaseTest(AsyncHTTPTestCase):
         # call the superclass version of this
         super(BaseTest, cls).setUpClass()
         config.load_file('ops/config.yaml')
+
+
+class AsyncPatch(object):
+    """ Context managed patch setup and teardown. """
+
+    def __init__(self, patch_data):
+        self.patch_data = patch_data
+        self.patch_objects = self.create_patches()
+
+    def __enter__(self):
+        """
+        Starts all patched objects using 'with' context management.
+        Does not return anything for 'as' keyword.
+        """
+        for patch in self.patch_objects:
+            patch.start()
+
+    def __exit__(self, *args):
+        """
+        Stops all patched objects using 'with' context management.
+        No error checking or stack trace evaluation occurs at the
+        moment.
+        """
+        for patch in self.patch_objects:
+            patch.stop()
+
+    def create_patches(self):
+        """
+        Patches methods from classes for mock client calls.
+        Accepts a list of dictionaries that include the
+        following keys:
+
+            class - Class object to be mocked.
+
+            method - Method name as a string.
+
+            mock_params - Keyword arguments to be passed
+                          to AsyncMagicMock.
+        """
+        patches = []
+        for d in self.patch_data:
+            patches.append(
+                patch.object(
+                    d['class'],
+                    d['method'],
+                    new=AsyncMagicMock(**d.get('mock_params', {}))
+                )
+            )
+        return patches
 
 
 class AsyncMagicMock(MagicMock):
