@@ -16,30 +16,11 @@ log = logging.getLogger(__name__)
 
 class BaseHandler(RequestHandler):
     """
-    This handles all of the setup of our requests. There are two
-    interesting bits of magic done here: racker and params
+    This handles all of the setup of our requests.
 
     self.params: This is set to a dictionary representation of the parsed
                  json body received.
-
-    self.racker: This is all of the information we get from auth for the
-                 current racker (auth token).
     """
-
-    def get_service_instance(self, username, region=None, catalog=None):
-        """
-        This method will build and apply the specific service instance needed.
-
-        """
-        args = [username, self.racker_token]
-
-        if region:
-            args.append(region)
-
-        if catalog:
-            args.append(catalog)
-
-        return self.service_obj(*args)
 
     @gen.coroutine
     def prepare(self):
